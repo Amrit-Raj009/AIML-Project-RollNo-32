@@ -12,7 +12,7 @@ from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 # LOAD DATASET
 # ==========================
 
-df = pd.read_csv("Dataset/insurance.csv")
+df = pd.read_csv("dataset/insurance.csv")
 
 print(df.head())
 print(df.info())
@@ -159,9 +159,6 @@ plt.ylabel("Predicted Charges")
 plt.title("Actual vs Predicted Charges")
 plt.show()
 
-# ==========================
-# FEATURE IMPORTANCE
-# ==========================
 
 importance = pd.DataFrame({
     "Feature": X.columns,
@@ -178,9 +175,7 @@ importance = importance.sort_values(
 print("\nFeature Importance")
 print(importance[["Feature","Coefficient"]])
 
-# ==========================
-# ANALYSIS
-# ==========================
+
 
 print("\nFeature Impact Analysis")
 
