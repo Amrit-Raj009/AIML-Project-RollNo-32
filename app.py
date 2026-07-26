@@ -18,7 +18,7 @@ st.write("Linear Regression Model")
 # --------------------------------
 # LOAD DATA
 # --------------------------------
-df = pd.read_csv("Dataset/insurance.csv")
+df = pd.read_csv("dataset/insurance.csv")
 
 # --------------------------------
 # DATA CLEANING
