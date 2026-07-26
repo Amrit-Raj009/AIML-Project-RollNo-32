@@ -1,4 +1,5 @@
 import pandas as pd
+import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -11,7 +12,7 @@ from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 # LOAD DATASET
 # ==========================
 
-df = pd.read_csv(r"C:\Users\Amrit\Downloads\insurance.csv")
+df = pd.read_csv("Dataset/insurance.csv")
 
 print(df.head())
 print(df.info())
