@@ -104,12 +104,17 @@ st.pyplot(fig3)
 # --------------------------------
 # ENCODING
 # --------------------------------
+df.drop(columns=["smoker"], inplace=True)
+
+# Remove BMI category
+df.drop(columns=["bmi_category"], inplace=True)
+
+# One-Hot Encode remaining categorical columns
 df = pd.get_dummies(
     df,
-    columns=["sex","smoker","region","bmi_category"],
+    columns=["sex", "region"],
     drop_first=True
 )
-
 # --------------------------------
 # MODEL
 # --------------------------------
@@ -186,49 +191,54 @@ st.dataframe(importance[["Feature","Coefficient"]])
 # --------------------------------
 # PREDICTION
 # --------------------------------
+# --------------------------------
+# PREDICTION
+# --------------------------------
+
 st.header("Predict Insurance Charges")
 
-age = st.slider("Age",18,64,30)
+age = st.slider("Age", 18, 64, 30)
 
-bmi = st.slider("BMI",15.0,55.0,28.0)
+bmi = st.slider("BMI", 15.0, 55.0, 28.0)
 
-children = st.slider("Children",0,5,0)
+children = st.slider("Children", 0, 5, 0)
 
-sex = st.selectbox("Sex",["male","female"])
+sex = st.selectbox("Sex", ["male", "female"])
 
-smoker = st.selectbox("Smoker",["no","yes"])
+smoker = st.selectbox("Smoker", ["no", "yes"])
 
 region = st.selectbox(
     "Region",
-    ["northeast","northwest","southeast","southwest"]
+    ["northeast", "northwest", "southeast", "southwest"]
 )
 
-bmi_cat = bmi_category(bmi)
+# Feature Engineering
+smoker_binary = 1 if smoker == "yes" else 0
+smoker_bmi = smoker_binary * bmi
 
-smoker_binary = 1 if smoker=="yes" else 0
+sex_male = 1 if sex == "male" else 0
 
-smoker_bmi = smoker_binary*bmi
+region_northwest = 1 if region == "northwest" else 0
+region_southeast = 1 if region == "southeast" else 0
+region_southwest = 1 if region == "southwest" else 0
 
 sample = pd.DataFrame({
-    "age":[age],
-    "bmi":[bmi],
-    "children":[children],
-    "smoker_binary":[smoker_binary],
-    "smoker_bmi":[smoker_bmi]
+    "age": [age],
+    "bmi": [bmi],
+    "children": [children],
+    "smoker_binary": [smoker_binary],
+    "smoker_bmi": [smoker_bmi],
+    "sex_male": [sex_male],
+    "region_northwest": [region_northwest],
+    "region_southeast": [region_southeast],
+    "region_southwest": [region_southwest]
 })
 
-sample = pd.get_dummies(
-    sample
-)
-
-sample = sample.reindex(columns=X.columns,fill_value=0)
+sample = sample.reindex(columns=X.columns, fill_value=0)
 
 if st.button("Predict"):
-
     prediction = model.predict(sample)[0]
-
     st.success(f"Estimated Insurance Charges: ₹{prediction:,.2f}")
-
 # --------------------------------
 # ANALYSIS
 # --------------------------------

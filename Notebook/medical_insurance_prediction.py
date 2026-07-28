@@ -1,5 +1,5 @@
 import pandas as pd
-import streamlit as st
+#import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -7,7 +7,6 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-
 # ==========================
 # LOAD DATASET
 # ==========================
@@ -16,13 +15,12 @@ df = pd.read_csv("dataset/insurance.csv")
 
 print(df.head())
 print(df.info())
-print(df.describe())
 
-# ==========================
-# DATA CLEANING
-# ==========================
+
+
 
 print("\nMissing Values")
+
 print(df.isnull().sum())
 
 print("\nDuplicate Rows:", df.duplicated().sum())
@@ -87,6 +85,11 @@ plt.show()
 # FEATURE ENGINEERING
 # ==========================
 
+
+# FEATURE ENGINEERING
+# ==========================
+
+# Create BMI category (optional - for analysis only)
 def bmi_category(x):
     if x < 18.5:
         return "Underweight"
@@ -99,21 +102,28 @@ def bmi_category(x):
 
 df["bmi_category"] = df["bmi"].apply(bmi_category)
 
-# Create binary smoker column BEFORE encoding
-df["smoker_binary"] = df["smoker"].map({"no":0,"yes":1})
+# Create binary smoker feature
+df["smoker_binary"] = df["smoker"].map({"no": 0, "yes": 1})
 
-# Interaction feature
+# Create interaction feature
 df["smoker_bmi"] = df["smoker_binary"] * df["bmi"]
 
-# One-Hot Encoding
+# Remove original smoker column
+df.drop(columns=["smoker"], inplace=True)
+
+# Remove BMI category (recommended for Linear Regression)
+df.drop(columns=["bmi_category"], inplace=True)
+
+# One-Hot Encode remaining categorical columns
 df = pd.get_dummies(
     df,
-    columns=["sex","smoker","region","bmi_category"],
+    columns=["sex", "region"],
     drop_first=True
 )
 
 print("\nColumns After Encoding")
 print(df.columns)
+
 
 # ==========================
 # MODEL BUILDING
@@ -157,6 +167,7 @@ plt.scatter(y_test, y_pred)
 plt.xlabel("Actual Charges")
 plt.ylabel("Predicted Charges")
 plt.title("Actual vs Predicted Charges")
+
 plt.show()
 
 
